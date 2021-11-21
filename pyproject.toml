@@ -1,0 +1,6 @@
+[tool.flake8]
+max-line-length = 88
+exclude = [
+    "venv",
+]
+extend-ignore = "E501, W503"

@@ -1,0 +1,5 @@
+-r main.txt
+
+# dev deps
+black>=20.8b1 # code formatter
+pyproject-flake8>=0.0.1a2 # linter
