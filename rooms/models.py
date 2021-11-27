@@ -7,7 +7,7 @@ from games.models import Game
 
 class Room(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    game = models.ForeignKey(Game, on_delete=models.PROTECT)
+    game = models.ForeignKey(Game, on_delete=models.PROTECT, related_name="rooms")
     max_players = models.PositiveSmallIntegerField(default=10)
     current_players = models.PositiveSmallIntegerField(default=0)
 
