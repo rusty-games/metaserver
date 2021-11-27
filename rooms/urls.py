@@ -8,9 +8,9 @@ router = DefaultRouter()
 router.register("rooms", views.RoomViewSet)
 
 urlpatterns = [
-    path("", include(router.urls)),
+    path("api/", include(router.urls)),
 ]
 
 websocket_urlpatterns = [
-    re_path(r"^room/(?P<room_code>[\w-]+)/$", RoomConsumer.as_asgi()),
+    re_path(r"^ws/room/(?P<room_code>[\w-]+)/$", RoomConsumer.as_asgi()),
 ]
