@@ -14,6 +14,13 @@ class GameViewSet(ModelViewSet):
     queryset = Game.objects.all()
     serializer_class = GameSerializer
 
+    @action(detail=False, methods=["get"])
+    def accepted(self, request, *args, **kwargs):
+        games = Game.objects.filter(accepted=True)
+        return Response(
+            status=status.HTTP_200_OK, data=GameSerializer(games, many=True).data
+        )
+
     @action(detail=True, methods=["get"])
     def rooms(self, request, *args, **kwargs):
         return Response(
