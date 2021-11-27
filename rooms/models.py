@@ -12,4 +12,4 @@ class Room(models.Model):
     current_players = models.PositiveSmallIntegerField(default=0)
 
     def __str__(self):
-        return f"Room {self.id}"
+        return f"Room for {self.game.name} ({self.id})"

@@ -32,6 +32,7 @@ ALLOWED_HOSTS = ["*"]
 # Application definition
 
 INSTALLED_APPS = [
+    "channels",
     # django
     "django.contrib.admin",
     "django.contrib.auth",
@@ -45,7 +46,6 @@ INSTALLED_APPS = [
     "corsheaders",
     "drf_yasg",
     "django_extensions",
-    "channels",
     # internal
     "games",
     "rooms",
