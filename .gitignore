@@ -1,10 +1,11 @@
 .idea/
 .vs/
+.vscode/
 
 venv/
 
 *.pyc
-__pycache__
+__pycache__/
 
 # file to store enviroment variables
 .env
