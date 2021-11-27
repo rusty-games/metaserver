@@ -12,5 +12,5 @@ urlpatterns = [
 ]
 
 websocket_urlpatterns = [
-    re_path(r"^room/(?P<room_code>\w+)/$", RoomConsumer.as_asgi()),
+    re_path(r"^room/(?P<room_code>[\w-]+)/$", RoomConsumer.as_asgi()),
 ]

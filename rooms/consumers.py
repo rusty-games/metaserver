@@ -1,24 +1,43 @@
 import json
 from channels.generic.websocket import AsyncJsonWebsocketConsumer
+from channels.db import database_sync_to_async
+from django.core import exceptions
+from rooms.models import Room
 
 
 class RoomConsumer(AsyncJsonWebsocketConsumer):
+    @database_sync_to_async
+    def get_room(self, room_pk) -> Room:
+        return Room.objects.get(pk=room_pk)
+
     async def connect(self):
         # TODO
-        # self.room = Room.get(pk=self.scope["url_route"]["kwargs"]["room_code"])
-        # self.room_group_name = f"room_{self.room.pk}"
-        self.room_name = self.scope["url_route"]["kwargs"]["room_code"]
-        self.room_group_name = f"room_{self.room_name}"
+        room_code = self.scope["url_route"]["kwargs"]["room_code"]
+        try:
+            self.room = await self.get_room(room_code)
+        except (Room.DoesNotExist, exceptions.ValidationError):
+            print(f"WebSocket No such room: {room_code}")
+            # TODO: should we self.close() here?
+            return
+        self.room_group_name = f"room_{self.room.pk}"
         # Join room group
         await self.channel_layer.group_add(self.room_group_name, self.channel_name)
         await self.accept()
         # TODO: inform others of new user joining
+        await self.channel_layer.group_send(
+            self.room_group_name,
+            {"type": "send_message", "event": "NEW_PLAYER"},
+        )
 
     async def disconnect(self, close_code):
         print("Disconnected")
         # Leave room group
         await self.channel_layer.group_discard(self.room_group_name, self.channel_name)
         # TODO: inform others of user quiting
+        await self.channel_layer.group_send(
+            self.room_group_name,
+            {"type": "send_message", "event": "PLAYER_LEFT"},
+        )
 
     async def receive(self, text_data):
         """
