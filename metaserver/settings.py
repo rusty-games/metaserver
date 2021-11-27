@@ -1,3 +1,5 @@
+import os
+
 """
 Django settings for metaserver project.
 
@@ -43,6 +45,7 @@ INSTALLED_APPS = [
     "corsheaders",
     "drf_yasg",
     "django_extensions",
+    "channels",
     # internal
     "games",
     "rooms",
@@ -91,7 +94,27 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = "metaserver.wsgi.application"
+ASGI_APPLICATION = "metaserver.asgi.application"
 
+CHANNEL_LAYERS = {
+    "default": {
+        ### Method 1: Via redis lab
+        # 'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        # 'CONFIG': {
+        #     "hosts": [
+        #       'redis://h:<password>;@<redis Endpoint>:<port>'
+        #     ],
+        # },
+        ### Method 2: Via local Redis
+        # 'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        # 'CONFIG': {
+        #      "hosts": [('127.0.0.1', 6379)],
+        # },
+        ### Method 3: Via In-memory channel layer
+        ## Using this method.
+        "BACKEND": "channels.layers.InMemoryChannelLayer"
+    },
+}
 
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
@@ -142,6 +165,10 @@ USE_TZ = True
 
 STATIC_URL = "/static/"
 
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "static"),
+]
+
 # AUTH_USER_MODEL = "users.User"
 
 
@@ -150,5 +177,7 @@ REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "core.authentication.BearerTokenAuthentication",
     ),
-    "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
+    "DEFAULT_PERMISSION_CLASSES": (
+        "rest_framework.permissions.IsAuthenticatedOrReadOnly",
+    ),
 }
