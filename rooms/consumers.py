@@ -2,6 +2,7 @@ import json
 from channels.generic.websocket import AsyncJsonWebsocketConsumer
 from channels.db import database_sync_to_async
 from django.core import exceptions
+from django.db.models import F
 from core.utils import generate_pseudonim
 from rooms.models import Room
 
@@ -12,7 +13,6 @@ class RoomConsumer(AsyncJsonWebsocketConsumer):
         return Room.objects.get(pk=room_pk)
 
     async def connect(self):
-        # TODO
         room_code = self.scope["url_route"]["kwargs"]["room_code"]
         try:
             self.room = await self.get_room(room_code)
@@ -20,12 +20,40 @@ class RoomConsumer(AsyncJsonWebsocketConsumer):
             print(f"WebSocket No such room: {room_code}")
             # TODO: should we self.close() here?
             return
+
+        if self.room.current_players >= self.room.max_players:
+            print(f"WebSocket Too much players in room {room_code}")
+            # TODO: should we self.close() here?
+            return
+        elif self.room.current_players < self.room.max_players:
+            await self.add_player()
+        else:
+            await self.start_game()
+
+    async def disconnect(self, close_code):
+        print("Disconnected")
+        # leave room group
+        await self.channel_layer.group_discard(self.room_group_name, self.channel_name)
+        # inform others of user quiting
+        await self.channel_layer.group_send(
+            self.room_group_name,
+            {
+                "type": "send_message",
+                "event": "PLAYER_LEFT",
+                "data": {"name": self.pseudonim},
+            },
+        )
+
+    async def add_player(self):
+        self.room.current_players = F("current_players") + 1
+        self.room.save(update_fields=["current_players"])
         self.room_group_name = f"room_{self.room.pk}"
         self.pseudonim = generate_pseudonim()
-        # Join room group
+        # join room group
         await self.channel_layer.group_add(self.room_group_name, self.channel_name)
         await self.accept()
-        # TODO: inform others of new user joining
+
+        # inform others about a user joining
         await self.channel_layer.group_send(
             self.room_group_name,
             {
@@ -35,19 +63,16 @@ class RoomConsumer(AsyncJsonWebsocketConsumer):
             },
         )
 
-    async def disconnect(self, close_code):
-        print("Disconnected")
-        # Leave room group
-        await self.channel_layer.group_discard(self.room_group_name, self.channel_name)
-        # TODO: inform others of user quiting
+    async def start_game(self):
         await self.channel_layer.group_send(
             self.room_group_name,
             {
                 "type": "send_message",
-                "event": "PLAYER_LEFT",
-                "data": {"name": self.pseudonim},
+                "event": "START_GAME",
+                "data": {},  # TODO: pass url to game index or something?
             },
         )
+        # TODO: should delete room group and Room object somehow
 
     # async def receive(self, text_data):
     #     """
@@ -79,8 +104,6 @@ class RoomConsumer(AsyncJsonWebsocketConsumer):
     #         )
 
     async def send_message(self, res):
-        """Receive message from room group"""
-        # Send message to WebSocket
         await self.send(
             text_data=json.dumps(
                 {
