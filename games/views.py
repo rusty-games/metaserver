@@ -33,5 +33,6 @@ class GameViewSet(ModelViewSet):
     @action(detail=True, methods=["get"])
     def rooms(self, request, *args, **kwargs):
         return Response(
-            status=status.HTTP_200_OK, data=RoomSerializer(self.get_object().rooms).data
+            status=status.HTTP_200_OK,
+            data=RoomSerializer(self.get_object().rooms, many=True).data,
         )
