@@ -171,7 +171,6 @@ STATICFILES_DIRS = [
 
 # AUTH_USER_MODEL = "users.User"
 
-
 # Django Rest Framework
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
