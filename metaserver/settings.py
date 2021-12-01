@@ -32,7 +32,6 @@ ALLOWED_HOSTS = ["*"]
 # Application definition
 
 INSTALLED_APPS = [
-    "channels",
     # django
     "django.contrib.admin",
     "django.contrib.auth",
@@ -41,6 +40,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     # third-party
+    "channels",
     "rest_framework",
     "rest_framework.authtoken",
     "corsheaders",
@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     # internal
     "games",
     "rooms",
+    "users",
 ]
 
 MIDDLEWARE = [
@@ -169,7 +170,7 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),
 ]
 
-# AUTH_USER_MODEL = "users.User"
+AUTH_USER_MODEL = "users.User"
 
 # Django Rest Framework
 REST_FRAMEWORK = {

@@ -34,4 +34,5 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("games/", include("games.urls")),
     path("rooms/", include("rooms.urls")),
+    path("users/", include("users.urls")),
 ]
