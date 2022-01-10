@@ -8,7 +8,7 @@ router = DefaultRouter()
 router.register("rooms", views.RoomViewSet)
 
 urlpatterns = [
-    path("api/", include(router.urls)),
+    path("", include(router.urls)),
 ]
 
 websocket_urlpatterns = [
