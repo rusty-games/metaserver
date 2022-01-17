@@ -30,7 +30,7 @@ Then simply run these commands in project directory:
 ```
 pip install -r requirements/dev.txt
 python manage.py migrate
-python manage.py loaddata fixtures/development.json
+python manage.py loaddata fixtures/example-data.json
 python manage.py runserver 8080 
 ```
 Running `loaddata` creates some mock data and most importantly an admin user with username `admin` and password `admin`.
