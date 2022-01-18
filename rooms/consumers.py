@@ -1,4 +1,6 @@
 import json
+
+from asgiref.sync import sync_to_async
 from channels.generic.websocket import AsyncJsonWebsocketConsumer
 from channels.db import database_sync_to_async
 from django.core import exceptions
@@ -46,7 +48,8 @@ class RoomConsumer(AsyncJsonWebsocketConsumer):
 
     async def add_player(self):
         self.room.current_players = F("current_players") + 1
-        self.room.save(update_fields=["current_players"])
+        await sync_to_async(self.room.save)(update_fields=["current_players"])
+        #self.room.save(update_fields=["current_players"])
         self.room_group_name = f"room_{self.room.pk}"
         self.pseudonim = generate_pseudonim()
         # join room group
