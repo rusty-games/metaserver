@@ -7,7 +7,7 @@ from django.core import exceptions
 from django.db.models import F
 from core.utils import generate_pseudonim
 from rooms.models import Room
-
+import uuid
 
 class RoomConsumer(AsyncJsonWebsocketConsumer):
     @database_sync_to_async
@@ -69,12 +69,13 @@ class RoomConsumer(AsyncJsonWebsocketConsumer):
         )
 
     async def start_game(self):
+        session_id = uuid.uuid4()
         await self.channel_layer.group_send(
             f"room_{self.room.pk}",
             {
                 "type": "send_message",
                 "event": "START_GAME",
-                "data": {},  # TODO: pass url to game index or something?
+                "data": {"session_id": str(session_id)},  # TODO: pass url to game index or something?
             },
         )
         # TODO: should delete room group and Room object somehow
