@@ -23,22 +23,24 @@ class RoomConsumer(AsyncJsonWebsocketConsumer):
             # TODO: should we self.close() here?
             return
 
-        if self.room.current_players >= self.room.max_players:
+        if self.room.current_players + 1 == self.room.max_players:
+            print('Hello there')
+            await self.add_player()
+            await self.start_game()
+        elif self.room.current_players >= self.room.max_players:
             print(f"WebSocket Too much players in room {room_code}")
             # TODO: should we self.close() here?
             return
         elif self.room.current_players < self.room.max_players:
             await self.add_player()
-        else:
-            await self.start_game()
 
     async def disconnect(self, close_code):
         print("Disconnected")
         # leave room group
-        await self.channel_layer.group_discard(self.room_group_name, self.channel_name)
+        await self.channel_layer.group_discard(f"room_{self.room.pk}", self.channel_name)
         # inform others of user quiting
         await self.channel_layer.group_send(
-            self.room_group_name,
+            f"room_{self.room.pk}",
             {
                 "type": "send_message",
                 "event": "PLAYER_LEFT",
@@ -68,7 +70,7 @@ class RoomConsumer(AsyncJsonWebsocketConsumer):
 
     async def start_game(self):
         await self.channel_layer.group_send(
-            self.room_group_name,
+            f"room_{self.room.pk}",
             {
                 "type": "send_message",
                 "event": "START_GAME",
