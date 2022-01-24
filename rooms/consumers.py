@@ -36,22 +36,27 @@ class RoomConsumer(AsyncJsonWebsocketConsumer):
 
     async def disconnect(self, close_code):
         print("Disconnected")
-        # leave room group
-        await self.channel_layer.group_discard(f"room_{self.room.pk}", self.channel_name)
-        # inform others of user quiting
-        await self.channel_layer.group_send(
-            f"room_{self.room.pk}",
-            {
-                "type": "send_message",
-                "event": "PLAYER_LEFT",
-                "data": {"name": self.pseudonim},
-            },
+        room = await self.get_room(self.room.pk)
+        if  room.current_players == 1:
+            await sync_to_async(self.room.delete)()
+        else:
+            self.room.current_players = F("current_players") - 1
+            await sync_to_async(self.room.save)(update_fields=["current_players"])
+            # leave room group
+            await self.channel_layer.group_discard(f"room_{self.room.pk}", self.channel_name)
+            # inform others of user quiting
+            await self.channel_layer.group_send(
+                f"room_{self.room.pk}",
+                {
+                    "type": "send_message",
+                    "event": "PLAYER_LEFT",
+                    "data": {"name": self.pseudonim},
+                },
         )
 
     async def add_player(self):
         self.room.current_players = F("current_players") + 1
         await sync_to_async(self.room.save)(update_fields=["current_players"])
-        #self.room.save(update_fields=["current_players"])
         self.room_group_name = f"room_{self.room.pk}"
         self.pseudonim = generate_pseudonim()
         # join room group
