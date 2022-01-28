@@ -1,27 +1,29 @@
 import os
 
-from django.core.files.storage import default_storage
 from rest_framework.viewsets import ModelViewSet
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.parsers import MultiPartParser
 
+from core.serializers import MessageSerializer
 from games.models import Game
 
 from games.serializers import GameSerializer
 from metaserver.settings import MEDIA_ROOT
-from rooms.models import Room
 from rooms.serializers import RoomSerializer
 
 from zipfile import ZipFile
-from pathlib import Path
+
+from users.models import User
 
 
 class GameViewSet(ModelViewSet):
     queryset = Game.objects.all()
     serializer_class = GameSerializer
     parser_classes = [MultiPartParser]
+    message_serializer = MessageSerializer
+    user = User
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -56,6 +58,27 @@ class GameViewSet(ModelViewSet):
                 GameSerializer(game).data,
                 status=status.HTTP_201_CREATED,
             )
+
+    def destroy(self, request, *args, **kwargs):
+        print(request)
+        if request.user.is_authenticated:
+            return super().destroy(request, *args, **kwargs)
+        return Response(
+            status=status.HTTP_401_UNAUTHORIZED,
+            data=self.message_serializer(
+                data={"message": "Bad credentials."}
+            ).initial_data,
+        )
+
+    def update(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            return super().update(request, *args, **kwargs)
+        return Response(
+            status=status.HTTP_401_UNAUTHORIZED,
+            data=self.message_serializer(
+                data={"message": "Bad credentials."}
+            ).initial_data,
+        )
 
     @action(detail=False, methods=["get"])
     def accepted(self, request, *args, **kwargs):
