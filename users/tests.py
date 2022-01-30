@@ -29,7 +29,9 @@ class RegisterTestCase(APITestCase):
 
     def test_register_successful_user_created(self):
         username = "john-doe"
-        self.client.post(reverse("register"), {"username": username, "password": "qwerty"})
+        self.client.post(
+            reverse("register"), {"username": username, "password": "qwerty"}
+        )
         user = User.objects.get(username=username)
         self.assertIsNotNone(user)
         self.assertEqual(user.username, username)
@@ -76,9 +78,7 @@ class LoginTestCase(APITestCase):
     def test_login_user_successful_status_code(self):
         username = "john-doe"
         password = "qwerty"
-        User.objects.create_user(
-            username=username, password=password
-        )
+        User.objects.create_user(username=username, password=password)
         response = self.client.post(
             reverse("login"),
             {"username": username, "password": password},
@@ -88,9 +88,7 @@ class LoginTestCase(APITestCase):
     def test_login_successful_body(self):
         username = "john-doe"
         password = "qwerty"
-        user = User.objects.create_user(
-            username=username, password=password
-        )
+        user = User.objects.create_user(username=username, password=password)
         response = self.client.post(
             reverse("login"),
             {"username": username, "password": password},
@@ -106,9 +104,7 @@ class LoginTestCase(APITestCase):
     def test_login_fail_bad_credentials_status_code(self):
         username = "john-doe"
         password = "qwerty"
-        User.objects.create_user(
-            username=username, password=password
-        )
+        User.objects.create_user(username=username, password=password)
         response = self.client.post(
             reverse("login"),
             {"username": username, "password": "password"},
@@ -118,9 +114,7 @@ class LoginTestCase(APITestCase):
     def test_login_fail_bad_credentials_body(self):
         username = "john-doe"
         password = "qwerty"
-        User.objects.create_user(
-            username=username, password=password
-        )
+        User.objects.create_user(username=username, password=password)
         response = self.client.post(
             reverse("login"),
             {"username": username, "password": "password"},

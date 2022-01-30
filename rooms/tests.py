@@ -1,6 +1,5 @@
 from collections import OrderedDict
 
-from django.utils import timezone
 from rest_framework import status
 from rest_framework.reverse import reverse
 
@@ -13,14 +12,24 @@ class RoomCreateTestCase(APITestCase):
     def test_create_room_status_code(self):
         game = Game.objects.create()
         response = self.client.post(
-            reverse("room-list"), {"name": "pokoj", "game": game.id, "max_players": 2, }
+            reverse("room-list"),
+            {
+                "name": "pokoj",
+                "game": game.id,
+                "max_players": 2,
+            },
         )
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
     def test_create_room_body(self):
         game = Game.objects.create()
         response = self.client.post(
-            reverse("room-list"), {"name": "pokoj", "game": game.id, "max_players": 2, }
+            reverse("room-list"),
+            {
+                "name": "pokoj",
+                "game": game.id,
+                "max_players": 2,
+            },
         )
         room = Room.objects.first()
         self.assertEqual(
@@ -32,7 +41,7 @@ class RoomCreateTestCase(APITestCase):
 class RoomGetTestCase(APITestCase):
     def test_get_room_status_code(self):
         game = Game.objects.create()
-        room = Room.objects.create(game = game)
+        room = Room.objects.create(game=game)
         room.save()
         response = self.client.get(reverse("room-detail", kwargs={"pk": room.id}))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -42,10 +51,7 @@ class RoomGetTestCase(APITestCase):
         room = Room.objects.create(game=game)
         room.save()
         response = self.client.get(reverse("room-detail", kwargs={"pk": room.id}))
-        self.assertEqual(
-            response.data["id"],
-            str(room.id)
-        )
+        self.assertEqual(response.data["id"], str(room.id))
 
 
 class RoomListGetTestCase(APITestCase):
@@ -69,27 +75,33 @@ class RoomListGetTestCase(APITestCase):
         self.assertListEqual(
             response.data,
             [
-                OrderedDict({
-                    "id": str(room1.id),
-                    "name": room1.name,
-                    "game": room1.game.id,
-                    "max_players": room1.max_players,
-                    "current_players": room1.current_players
-                }),
-                OrderedDict({
-                    "id": str(room2.id),
-                    "name": room2.name,
-                    "game": room2.game.id,
-                    "max_players": room2.max_players,
-                    "current_players": room2.current_players
-                }),
-                OrderedDict({
-                    "id": str(room3.id),
-                    "name": room3.name,
-                    "game": room3.game.id,
-                    "max_players": room3.max_players,
-                    "current_players": room3.current_players
-                }),
+                OrderedDict(
+                    {
+                        "id": str(room1.id),
+                        "name": room1.name,
+                        "game": room1.game.id,
+                        "max_players": room1.max_players,
+                        "current_players": room1.current_players,
+                    }
+                ),
+                OrderedDict(
+                    {
+                        "id": str(room2.id),
+                        "name": room2.name,
+                        "game": room2.game.id,
+                        "max_players": room2.max_players,
+                        "current_players": room2.current_players,
+                    }
+                ),
+                OrderedDict(
+                    {
+                        "id": str(room3.id),
+                        "name": room3.name,
+                        "game": room3.game.id,
+                        "max_players": room3.max_players,
+                        "current_players": room3.current_players,
+                    }
+                ),
             ],
         )
 

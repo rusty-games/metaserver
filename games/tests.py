@@ -1,12 +1,8 @@
-from collections import OrderedDict
-
 from rest_framework import status
 from rest_framework.reverse import reverse
 
 from games.models import Game
 from core.testcases import APITestCase
-
-from django.core.files.uploadedfile import SimpleUploadedFile
 
 class GameGetTestCase(APITestCase):
     def test_get_games_status_code(self):
@@ -56,19 +52,20 @@ class GameGetTestCase(APITestCase):
 class GameCreateTestCase(APITestCase):
     def test_create_game_status_code(self):
         with open("./test_file.zip") as zip_file:
-            response = self.client.post(reverse("game-list"),
-                                        {"name": "gierka", "description": "test_game", "files": zip_file})
+            response = self.client.post(
+                reverse("game-list"),
+                {"name": "gierka", "description": "test_game", "files": zip_file},
+            )
             self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-
 
     def test_create_game_body(self):
         with open("./test_file.zip") as zip_file:
-            response = self.client.post(reverse("game-list"), {"name": "gierka", "description": "test_game", "files": zip_file })
-            game = Game.objects.get(id=response.data["id"])
-            self.assertEqual(
-                response.data["id"],
-                str(game.id)
+            response = self.client.post(
+                reverse("game-list"),
+                {"name": "gierka", "description": "test_game", "files": zip_file},
             )
+            game = Game.objects.get(id=response.data["id"])
+            self.assertEqual(response.data["id"], str(game.id))
 
 
 class GameDeleteTestCase(APITestCase):

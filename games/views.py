@@ -35,23 +35,23 @@ class GameViewSet(ModelViewSet):
         else:
             game_files = serializer.validated_data["files"]
             game_name = serializer.validated_data["name"]
-            original_zip_path = MEDIA_ROOT + '/' + game_files.name
-            game_folder = MEDIA_ROOT + '/' + game_name
+            original_zip_path = MEDIA_ROOT + "/" + game_files.name
+            game_folder = MEDIA_ROOT + "/" + game_name
 
             # save zip file to directory specified by MEDIA_ROOT
             game = serializer.save()
 
             # change 'files' field to point to index.html file
             data = request.data
-            data["files"] = '/' + game_name + "/index.html"
+            data["files"] = "/" + game_name + "/index.html"
             serializer.update(game, data)
 
             # extract all the contents of zip file in MEDIA_ROOT directory
-            with ZipFile(original_zip_path, 'r') as zip_file:
+            with ZipFile(original_zip_path, "r") as zip_file:
                 zip_file.extractall(game_folder)
 
             # change name of the zip file to reflect the name of the game
-            new_zip_path = MEDIA_ROOT + '/' + game_name + ".zip"
+            new_zip_path = MEDIA_ROOT + "/" + game_name + ".zip"
             os.rename(original_zip_path, new_zip_path)
 
             return Response(
