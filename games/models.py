@@ -23,9 +23,10 @@ class Game(models.Model):
 
 @receiver(models.signals.post_delete, sender=Game)
 def delete_file(instance, *args, **kwargs):
-    game_folder = MEDIA_ROOT + instance.files.name.replace("/index.html", "")
-    path = pathlib.Path(game_folder)
-    shutil.rmtree(path)
+    if instance.name:
+        game_folder = MEDIA_ROOT + instance.files.name.replace("/index.html", "")
+        path = pathlib.Path(game_folder)
+        shutil.rmtree(path)
 
-    game_zip = game_folder + ".zip"
-    pathlib.Path(game_zip).unlink()
+        game_zip = game_folder + ".zip"
+        pathlib.Path(game_zip).unlink()

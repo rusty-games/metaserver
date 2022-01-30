@@ -1,8 +1,11 @@
+import os
+
 from rest_framework import status
 from rest_framework.reverse import reverse
 
 from games.models import Game
 from core.testcases import APITestCase
+
 
 class GameGetTestCase(APITestCase):
     def test_get_games_status_code(self):
@@ -57,6 +60,7 @@ class GameCreateTestCase(APITestCase):
                 {"name": "gierka", "description": "test_game", "files": zip_file},
             )
             self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+            os.remove("./media/gierka.zip")
 
     def test_create_game_body(self):
         with open("./test_file.zip") as zip_file:
@@ -66,6 +70,7 @@ class GameCreateTestCase(APITestCase):
             )
             game = Game.objects.get(id=response.data["id"])
             self.assertEqual(response.data["id"], str(game.id))
+            os.remove("./media/gierka.zip")
 
 
 class GameDeleteTestCase(APITestCase):
@@ -73,6 +78,16 @@ class GameDeleteTestCase(APITestCase):
         game = Game.objects.create()
         response = self.client.delete(reverse("game-detail", kwargs={"pk": game.id}))
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+
+    # def test_delete__real_game_successful_status_code(self):
+    #     with open("./test_file.zip") as zip_file:
+    #         response = self.client.post(
+    #             reverse("game-list"),
+    #             {"name": "gierka", "description": "test_game", "files": zip_file},
+    #         )
+    #         game = Game.objects.get(id=response.data["id"])
+    #         response = self.client.delete(reverse("game-detail", kwargs={"pk": game.id}))
+    #         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
 
     def test_delete_game_successful_body(self):
         game = Game.objects.create()
