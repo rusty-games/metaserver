@@ -4,6 +4,7 @@ from rest_framework.reverse import reverse
 from games.models import Game
 from core.testcases import APITestCase
 
+
 class GameGetTestCase(APITestCase):
     def test_get_games_status_code(self):
         response = self.client.get(reverse("game-list"))
