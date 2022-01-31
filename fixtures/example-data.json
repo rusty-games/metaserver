@@ -7,59 +7,7 @@
             "user": "3de38572-25f7-4239-b1ba-d21de28953b9",
             "content_type": 8,
             "object_id": "7c15a421-d1a1-4d9a-b98b-68e2965dcbfe",
-            "object_repr": "Game Chess",
-            "action_flag": 1,
-            "change_message": "[{\"added\": {}}]"
-        }
-    },
-    {
-        "model": "admin.logentry",
-        "pk": 2,
-        "fields": {
-            "action_time": "2021-12-01T21:14:18.577Z",
-            "user": "3de38572-25f7-4239-b1ba-d21de28953b9",
-            "content_type": 8,
-            "object_id": "1b307324-a217-4f47-9fa7-3f9ef8cb628c",
-            "object_repr": "Game Hardcore",
-            "action_flag": 1,
-            "change_message": "[{\"added\": {}}]"
-        }
-    },
-    {
-        "model": "admin.logentry",
-        "pk": 3,
-        "fields": {
-            "action_time": "2021-12-01T21:14:35.043Z",
-            "user": "3de38572-25f7-4239-b1ba-d21de28953b9",
-            "content_type": 9,
-            "object_id": "59706a17-b863-44ad-a4b4-e6ca2853270a",
-            "object_repr": "Room Chess for Beginners for game Chess (59706a17-b863-44ad-a4b4-e6ca2853270a)",
-            "action_flag": 1,
-            "change_message": "[{\"added\": {}}]"
-        }
-    },
-    {
-        "model": "admin.logentry",
-        "pk": 4,
-        "fields": {
-            "action_time": "2021-12-01T21:14:42.642Z",
-            "user": "3de38572-25f7-4239-b1ba-d21de28953b9",
-            "content_type": 9,
-            "object_id": "d33b6ed2-d43e-40d1-870b-b0d3e857aa90",
-            "object_repr": "Room Chess for 2500+ elo players for game Chess (d33b6ed2-d43e-40d1-870b-b0d3e857aa90)",
-            "action_flag": 1,
-            "change_message": "[{\"added\": {}}]"
-        }
-    },
-    {
-        "model": "admin.logentry",
-        "pk": 5,
-        "fields": {
-            "action_time": "2021-12-01T21:14:53.835Z",
-            "user": "3de38572-25f7-4239-b1ba-d21de28953b9",
-            "content_type": 9,
-            "object_id": "64010f29-bb50-4223-93c8-9656142f91eb",
-            "object_repr": "Room This wierd type of chess for 4 players for game Chess (64010f29-bb50-4223-93c8-9656142f91eb)",
+            "object_repr": "Footballers",
             "action_flag": 1,
             "change_message": "[{\"added\": {}}]"
         }
@@ -518,7 +466,7 @@
         "fields": {
             "name": "Footballers",
             "description": "Football game for two players. Use arrow keys to move and spacebar to shoot the ball",
-            "files": "Footballers/index.html",
+            "files": "/Footballers/index.html",
             "accepted": true,
             "created_at": "2021-12-01T21:13:48.641Z",
             "updated_at": "2021-12-01T21:13:48.641Z"
